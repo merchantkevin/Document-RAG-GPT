@@ -1,15 +1,3 @@
----
-title: RAG Document Chat
-emoji: 📄
-colorFrom: indigo
-colorTo: purple
-sdk: gradio
-sdk_version: 6.16.0
-app_file: app.py
-pinned: false
-license: mit
----
-
 # 📄 RAG Document Chat
 
 A Retrieval-Augmented Generation (RAG) chat application. Ask questions answered
@@ -19,7 +7,7 @@ so it works immediately, and you can also upload your own PDF, DOCX, or TXT file
 
 ## Built-in dataset
 
-On startup the app indexes a small India-relevant corpus (in `data/`):
+On startup the app indexes a small corpus (in `data/`):
 
 - `Fundamental-Rights.pdf` — Part III, Articles 12–35
 - `Directive-Principles.docx` — Part IV, Articles 36–51
@@ -62,6 +50,8 @@ restarting the Space) reverts to the built-in corpus.
 - **Session isolation** — each user's index lives in their own session state.
 - **Provider-agnostic LLM** — Groq (default, free tier), OpenAI, or Gemini, all via
   the OpenAI-compatible API.
+- **Conversation memory** — the last few turns are sent to the model, so follow-up
+  questions that refer back are understood in the context of the conversation.
 
 ## How it works
 
@@ -135,3 +125,7 @@ Create one at <https://console.groq.com/keys> (free tier, no credit card), then 
 - Scanned/image-only PDFs yield no text (no OCR); the app reports this clearly.
 - The injection filter uses high-signal heuristics; the model-side instruction is
   the primary defence against instructions hidden inside documents.
+- Conversation memory is applied at the generation step only: recent turns help the
+  model interpret a follow-up, but retrieval still embeds the raw question. For
+  follow-ups whose meaning depends entirely on earlier turns, **conversational query rewriting** — rephrasing the follow-up into a standalone question before retrieval —
+  would be the more robust approach.

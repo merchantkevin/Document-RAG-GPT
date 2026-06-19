@@ -6,6 +6,7 @@ from . import document_loader, chunker, embeddings, guardrails, llm
 from .vector_store import VectorStore
 
 TOP_K = 6
+HISTORY_TURNS = 6  # recent user + assistant exchanges kept for context
 # Below this cosine score, the best match is treated as out-of-scope.
 RELEVANCE_THRESHOLD = float(os.getenv("RELEVANCE_THRESHOLD", "0.25"))
 
@@ -54,7 +55,7 @@ def build_index(file_paths: List[str]) -> Tuple[VectorStore, List[Tuple[str, int
     return store, summaries
 
 
-def answer(store: VectorStore, query: str) -> Tuple[str, List[Dict]]:
+def answer(store: VectorStore, query: str, history=None) -> Tuple[str, List[Dict]]:
     """Answer a query against the store. Returns (response_text, retrieved_hits)."""
     # 1. Input validation
     ok, cleaned, msg = guardrails.validate_input(query)
@@ -81,5 +82,6 @@ def answer(store: VectorStore, query: str) -> Tuple[str, List[Dict]]:
         f"QUESTION: {cleaned}\n\n"
         "Answer using only the excerpts above."
     )
-    response = llm.generate(SYSTEM_PROMPT, user_prompt)
+    recent = (history or [])[-(HISTORY_TURNS * 2):]
+    response = llm.generate(SYSTEM_PROMPT, user_prompt, history=recent)
     return response, hits

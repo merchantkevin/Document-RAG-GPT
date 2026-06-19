@@ -80,7 +80,7 @@ def chat_fn(message, history, store):
     if active is None or len(active) == 0:
         reply = "Please upload and process documents before asking questions."
     else:
-        reply, hits = pipeline.answer(active, message)
+        reply, hits = pipeline.answer(active, message, history=history)
         if hits and reply != pipeline.OUT_OF_SCOPE_MSG and reply != pipeline.INJECTION_MSG:
             sources = sorted({h["source"] for h in hits})
             reply += f"\n\n*Sources: {', '.join(sources)}*"

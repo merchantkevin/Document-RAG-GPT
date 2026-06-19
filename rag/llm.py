@@ -46,7 +46,15 @@ def is_configured() -> bool:
         return False
 
 
-def generate(system_prompt: str, user_prompt: str,
+def _messages(system_prompt, history, user_prompt):
+    msgs = [{"role": "system", "content": system_prompt}]
+    if history:
+        msgs.extend(history)          # recent prior turns, for resolving references
+    msgs.append({"role": "user", "content": user_prompt})
+    return msgs
+
+
+def generate(system_prompt: str, user_prompt: str, history=None,
              temperature: float = 0.1, max_tokens: int = 700) -> str:
     cfg, api_key, model = _config()
     if not api_key:
@@ -57,9 +65,6 @@ def generate(system_prompt: str, user_prompt: str,
         model=model,
         temperature=temperature,
         max_tokens=max_tokens,
-        messages=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
+        messages=_messages(system_prompt, history, user_prompt),
     )
     return (resp.choices[0].message.content or "").strip()
