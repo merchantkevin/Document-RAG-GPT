@@ -29,11 +29,24 @@ This exercises all three file loaders (PDF, DOCX, TXT). The bare text of the
 Constitution is freely reproducible in India (Copyright Act, 1957, s. 52); it was
 compiled from public sources via `build_corpus.py` and is provided for
 demonstration (see `indiacode.nic.in` for the authoritative current text).
-Uploading your own files replaces the built-in corpus for that session.
 
 Sample questions: *"What does Article 21 protect?"*, *"What is the right against
 exploitation?"*, *"List the Fundamental Duties"*, *"What does the Preamble say?"*.
 An out-of-scope question like *"What's the weather today?"* is correctly refused.
+
+## Document scope (by design)
+
+The assistant answers from one document set at a time:
+
+- **Default:** the built-in Constitution of India corpus described above.
+- **After upload:** once you upload and process your own files, the system uses
+  **only** those documents for the rest of the session; the built-in corpus is no
+  longer searched.
+
+This single-source behaviour is an intentional design choice — when a user brings
+their own documents, answers should be grounded **solely** in those documents,
+with no blending from an unrelated default corpus. Starting a new session (or
+restarting the Space) reverts to the built-in corpus.
 
 ## Features
 
