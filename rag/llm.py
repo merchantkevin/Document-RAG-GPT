@@ -48,8 +48,10 @@ def is_configured() -> bool:
 
 def _messages(system_prompt, history, user_prompt):
     msgs = [{"role": "system", "content": system_prompt}]
-    if history:
-        msgs.extend(history)          # recent prior turns, for resolving references
+    for m in (history or []):
+        role, content = m.get("role"), m.get("content")
+        if role in ("user", "assistant") and isinstance(content, str) and content.strip():
+            msgs.append({"role": role, "content": content})   # drop metadata/options/etc.
     msgs.append({"role": "user", "content": user_prompt})
     return msgs
 
