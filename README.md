@@ -1,3 +1,15 @@
+---
+title: Document RAG GPT
+emoji: 📄
+colorFrom: indigo
+colorTo: purple
+sdk: gradio
+sdk_version: 6.16.0
+app_file: app.py
+pinned: false
+license: mit
+---
+
 # 📄 RAG Document Chat
 
 A Retrieval-Augmented Generation (RAG) chat application. Ask questions answered
